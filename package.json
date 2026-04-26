@@ -1,0 +1,19 @@
+{
+  "name": "lynn",
+  "version": "1.0.0",
+  "description": "Lynn recommendation optimizer using genetic algorithms for BIA601",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "evaluate": "node src/evaluate.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "xlsx": "^0.18.5"
+  }
+}

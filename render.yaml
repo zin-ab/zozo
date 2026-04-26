@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: lynn-recommender
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health

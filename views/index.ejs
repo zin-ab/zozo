@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lynn - منصة تحسين التوصيات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Changa:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+    <div class="bg-grid"></div>
+
+    <main class="container">
+      <section class="masthead reveal">
+        <div class="masthead-head">
+          <p class="tag">BIA601 / Smart Algorithms</p>
+          <p class="mini-tag">Genetic Recommendation Optimizer</p>
+        </div>
+        <h1>منصة تحسين توصيات المتجر الإلكتروني</h1>
+        <p class="lead">
+          نستخدم خوارزمية جينية متعددة المعايير لتحسين ترتيب المنتجات لكل مستخدم
+          اعتمادًا على تقييماته وسلوكه الفعلي داخل المتجر.
+        </p>
+        <div class="meta-cards">
+          <article>
+            <span>المستخدمون</span>
+            <strong><%= datasetSummary.users %></strong>
+          </article>
+          <article>
+            <span>المنتجات</span>
+            <strong><%= datasetSummary.products %></strong>
+          </article>
+          <article>
+            <span>السجلات السلوكية</span>
+            <strong><%= datasetSummary.behavior %></strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel team-panel reveal delay-1">
+        <div class="section-head">
+          <h2>أعضاء الفريق</h2>
+          <p>قائمة الطلاب المشاركين في تنفيذ المشروع</p>
+        </div>
+        <ul class="team-list">
+          <% teamMembers.forEach((member) => { %>
+          <li><%= member %></li>
+          <% }); %>
+        </ul>
+      </section>
+
+      <section class="panel reveal delay-2">
+        <div class="section-head">
+          <h2>اختيار المستخدم وتحليل التوصيات</h2>
+          <p>اختر مستخدمًا لعرض نتائج التوصية قبل وبعد التحسين</p>
+        </div>
+        <form method="GET" action="/">
+          <label for="userId">المستخدم</label>
+          <div class="form-row">
+            <select id="userId" name="userId">
+              <% users.forEach((user) => { %>
+              <option
+                value="<%= user.user_id %>"
+                <%= selectedUserId === user.user_id ? "selected" : "" %>
+              >
+                المستخدم <%= user.user_id %> - العمر <%= user.age %> - <%= user.country %>
+              </option>
+              <% }); %>
+            </select>
+            <button type="submit">تحديث النتائج</button>
+          </div>
+        </form>
+      </section>
+
+      <% if (error) { %>
+      <section class="panel error reveal">
+        <h2>تعذر توليد التوصيات</h2>
+        <p><%= error %></p>
+      </section>
+      <% } %>
+
+      <% if (result) { %>
+      <section class="stats-grid reveal delay-3">
+        <article class="stat-card">
+          <p>Fitness الأساسي</p>
+          <strong><%= result.metrics.baseline_fitness %></strong>
+        </article>
+        <article class="stat-card active">
+          <p>Fitness بعد التحسين</p>
+          <strong><%= result.metrics.optimized_fitness %></strong>
+        </article>
+        <article class="stat-card <%= result.metrics.uplift_percent >= 0 ? "positive" : "negative" %>">
+          <p>نسبة التحسن</p>
+          <strong><%= result.metrics.uplift_percent %>%</strong>
+        </article>
+        <article class="stat-card">
+          <p>السعر المفضل</p>
+          <strong><%= result.profile.preferred_price %></strong>
+        </article>
+      </section>
+
+      <section class="recommendation-grid reveal delay-4">
+        <article class="panel table-panel">
+          <h2>قبل التحسين</h2>
+          <p class="panel-subtitle">ترتيب المنتجات بالأوزان الافتراضية</p>
+          <table>
+            <thead>
+              <tr>
+                <th>رتبة</th>
+                <th>منتج</th>
+                <th>فئة</th>
+                <th>سعر</th>
+                <th>درجة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% result.baseline.forEach((item) => { %>
+              <tr>
+                <td><%= item.rank %></td>
+                <td>#<%= item.product_id %></td>
+                <td><%= item.category %></td>
+                <td><%= item.price %></td>
+                <td><%= item.predicted_score %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="panel table-panel">
+          <h2>بعد التحسين الجيني</h2>
+          <p class="panel-subtitle">الترتيب الناتج عن الأوزان المتعلمة</p>
+          <table>
+            <thead>
+              <tr>
+                <th>رتبة</th>
+                <th>منتج</th>
+                <th>فئة</th>
+                <th>سعر</th>
+                <th>درجة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% result.optimized.forEach((item) => { %>
+              <tr>
+                <td><%= item.rank %></td>
+                <td>#<%= item.product_id %></td>
+                <td><%= item.category %></td>
+                <td><%= item.price %></td>
+                <td><%= item.predicted_score %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </article>
+      </section>
+
+      <section class="panel weights reveal delay-5">
+        <h2>مقارنة الأوزان</h2>
+        <div class="weights-grid">
+          <article>
+            <h3>الأساسي</h3>
+            <p>Affinity: <strong><%= result.optimization.default_weights.category_affinity %></strong></p>
+            <p>Engagement: <strong><%= result.optimization.default_weights.category_engagement %></strong></p>
+            <p>Price: <strong><%= result.optimization.default_weights.price_alignment %></strong></p>
+            <p>Popularity: <strong><%= result.optimization.default_weights.popularity %></strong></p>
+          </article>
+          <article>
+            <h3>المحسن</h3>
+            <p>Affinity: <strong><%= result.optimization.optimized_weights.category_affinity %></strong></p>
+            <p>Engagement: <strong><%= result.optimization.optimized_weights.category_engagement %></strong></p>
+            <p>Price: <strong><%= result.optimization.optimized_weights.price_alignment %></strong></p>
+            <p>Popularity: <strong><%= result.optimization.optimized_weights.popularity %></strong></p>
+          </article>
+          <article>
+            <h3>مؤشرات الجودة</h3>
+            <p>Relevance: <strong><%= result.optimized_objectives.relevance %></strong></p>
+            <p>Diversity: <strong><%= result.optimized_objectives.diversity %></strong></p>
+            <p>Novelty: <strong><%= result.optimized_objectives.novelty %></strong></p>
+            <p>Price Harmony: <strong><%= result.optimized_objectives.price_harmony %></strong></p>
+          </article>
+        </div>
+      </section>
+      <% } %>
+
+      <section class="panel reference reveal delay-5">
+        <h2>المرجع العلمي</h2>
+        <p class="ref-title"><%= paper.title %></p>
+        <p><%= paper.authors %> - <%= paper.journal %></p>
+        <p>
+          DOI:
+          <a href="<%= paper.url %>" target="_blank" rel="noreferrer noopener"><%= paper.doi %></a>
+        </p>
+        <p class="tiny-note">Behavior source: <strong><%= behaviorFile %></strong></p>
+      </section>
+    </main>
+  </body>
+</html>
